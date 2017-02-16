@@ -154,6 +154,36 @@ class project{
 	public int getCost(int day, int shift) {
 		return cost[day][shift];
 	}
+	
+	public int getCost(int day) {
+		//return value
+		int costPerDay = 0;
+		//holder for if the project has started
+		boolean projectStarted = false;
+		//look at each shift of the day
+		for(int shift=0; shift<3; shift++) {
+			//add the shift cost to the day's cost
+			costPerDay+=cost[day][shift];
+			//if no one worked then the current days cost is 0 if there are people working then
+			//there will be a cost and thus the project has started
+			if (costPerDay > 0)
+				projectStarted = true;
+			
+			//we also need to check to see if the project is just on hiatus
+			//look back through the previous days and see if there were payments 
+			//indicating that the project has started
+			if(day > 0)
+				for(int pastDay=day-1; pastDay>-1; pastDay--)
+					if(cost[pastDay][shift] > 0)
+						projectStarted = true;
+			
+		}
+		//the daily fee addition is based on whether the project is started or not
+		if(projectStarted)
+			return costPerDay + 1000;
+		else
+			return costPerDay + 200;
+	}
 }
 
 class foreman{
@@ -253,20 +283,31 @@ class foreman{
 	private void createCostSchedule(project p, int day) {
 		for (constructionTeam team : teams[day]) {
 			if(team.getProject() == p) {
+				//base cost for construction
 				int cost = 0;
+				//iterate over the 3 shifts in the day
 				for(int shift=0;shift<3;shift++) {
+					//get the team for that shift
 					worker[] workers = team.getWorker(shift);
+					//create the coordination per worker fee based on the number of workers
 					float laborModifier = workers.length*.1f;
 					for(worker w : workers) {
+						//get the cost per worker
 						cost += w.getSalary();
+						//get the cost of that workers equipment
 						cost += w.getEquipment().getCost();
+						//electricians get a bonus if they have worked both available shifts in the day
+						//check if this is the second shift and if so look to see if they worked the first one
 						if(w.getEquipment().getType() == equipmentTypes.ELECTRICALTOOLS && shift == 1) {
 							if(!w.checkTimeCard(day, shift-1)) {
+								//if the worked both shifts give them a bonus
 								cost+=100;
 							}
 						}
 					}
+					//add the coordination costs
 					cost *= 1+laborModifier;
+					//set the project cost
 					p.setCost(day, shift, cost);
 				}
 			}
