@@ -29,9 +29,9 @@ class procurement {
 	//******************
 	//method constructor
 	//method provide requested workers and equipment
-	public worker[] getWorker(equipmentTypes e) {
-		return null;
-	}
+	//public worker[] getWorker(equipmentTypes e) {
+	//	return null;
+	//}
 	//method pair equipment and workers
 	
 }
@@ -52,17 +52,21 @@ class worker{
 	//******************
 	//variable name
 	//variable salary
+	//private int salary;
 	//variable equipment
 	//variable timeCard
 	//array shift restrictions
 	//******************
 	//method constructor
 	//method check timeCard and fill it if it is empty
-	public boolean checkTimeCard(int day, int shift){
-		return false;
-	}
+	//public boolean checkTimeCard(int day, int shift){
+	//	return false;
+	//}
 	//method check shift restrictions
-	
+	//method getSalary
+	//public int getSalary() {
+	//	return this.salary;
+	//}
 }
 
 class timeCard{
@@ -87,7 +91,9 @@ class project{
 	int numberOfShifts;
 	//array shifts
 	equipmentTypes[][] equipmentUnits;
-	//equipment[] equipmentList;
+	//variable cost chart per day per shift
+		//		day shift cost
+	int cost[][];
 	//******************
 	//method constructor
 	project(String name, int number) {
@@ -133,6 +139,21 @@ class project{
 		
 		equipmentUnits[phase] = popShift;
 	}
+	
+	public void setCost(int day, int shift, int cost) {
+		int[][] pushCost = new int[day][shift];
+		for(int d=0;d<this.cost.length;d++) {
+			for(int s=0; s<this.cost[d].length;s++) {
+				pushCost[d][s] = this.cost[d][s];
+			}
+		}
+		pushCost[day][shift] = cost;
+		this.cost = pushCost;
+	}
+	
+	public int getCost(int day, int shift) {
+		return cost[day][shift];
+	}
 }
 
 class foreman{
@@ -142,6 +163,7 @@ class foreman{
 	constructionTeam[][] teams;
 	//list of projects
 	project[] projects;
+	//passed procurment
 	procurement proc;
 	//******************
 	//method constructor
@@ -164,9 +186,9 @@ class foreman{
 				for(int phase=0; phase<p.equipmentUnits.length;phase++) {
 					//check if there are still needs for the current project if not we can move to the next project
 					if (p.equipmentUnits[phase].length > 0) {
-						//reset the loop control if the prevoius project was complete but this one is not
+						//reset the loop control if the previous project was complete but this one is not
 						jobsScheduled = false;
-						//get a list of the needed quipment for this project
+						//get a list of the needed equipment for this project
 						equipmentTypes[] needs = p.equipmentUnits[phase];
 						//request the equipment from procurement
 						for(equipmentTypes e: needs) {
@@ -178,19 +200,34 @@ class foreman{
 								for (int shift=0; shift<3;shift++) {
 									//check if the worker associated with the equipment is already working
 									if(currentWorker.checkTimeCard(currentDay, shift)){
-										//make sure the the equipment and worker can work for the given shit
+										//make sure the the equipment and worker can work for the given shift
 										if(currentWorker.checkShiftRestrictions(shift) && e.checkShiftRestrictions(shift)) {
-											//create a new construction team for the project if not yet created
-											constructionTeam ct = checkTeam(p, currentDay);
-											//add the worker to the team
-											ct.addWorker(currentWorker, shift);
-											//remove the requirement from the project as it is met
-											p.removeShift(e, phase);
-											//fill out the worker's timecard
-											currentWorker.setTimeCard(currentDay, shift);
+											//check if they are a carpenter check previous shifts
+											if(currentWorker.getEquipment().getType() == equipmentTypes.CARPENTRYTOOLS && shift > 0) {
+												if(currentWorker.checkTimeCard(currentDay, shift-1)) {
+													//create a new construction team for the project if not yet created
+													constructionTeam ct = checkTeam(p, currentDay);
+													//add the worker to the team
+													ct.addWorker(currentWorker, shift);
+													//remove the requirement from the project as it is met
+													p.removeShift(e, phase);
+													//fill out the worker's timecard
+													currentWorker.setTimeCard(currentDay, shift);
+												}
+											}else {
+												//create a new construction team for the project if not yet created
+												constructionTeam ct = checkTeam(p, currentDay);
+												//add the worker to the team
+												ct.addWorker(currentWorker, shift);
+												//remove the requirement from the project as it is met
+												p.removeShift(e, phase);
+												//fill out the worker's timecard
+												currentWorker.setTimeCard(currentDay, shift);
+											}
 										}
 									}
 								}
+								createCostSchedule(p, currentDay);
 							}
 						}
 					}else {
@@ -213,6 +250,28 @@ class foreman{
 	}
 	
 	//method calculate cost per shift and cost per day
+	private void createCostSchedule(project p, int day) {
+		for (constructionTeam team : teams[day]) {
+			if(team.getProject() == p) {
+				int cost = 0;
+				for(int shift=0;shift<3;shift++) {
+					worker[] workers = team.getWorker(shift);
+					float laborModifier = workers.length*.1f;
+					for(worker w : workers) {
+						cost += w.getSalary();
+						cost += w.getEquipment().getCost();
+						if(w.getEquipment().getType() == equipmentTypes.ELECTRICALTOOLS && shift == 1) {
+							if(!w.checkTimeCard(day, shift-1)) {
+								cost+=100;
+							}
+						}
+					}
+					cost *= 1+laborModifier;
+					p.setCost(day, shift, cost);
+				}
+			}
+		}
+	}
 }
 
 class constructionTeam{
@@ -251,6 +310,10 @@ class constructionTeam{
 	
 	public project getProject() {
 		return this.project;
+	}
+	
+	public worker[] getWorker(int shift) {
+		return shifts[shift];
 	}
 	
 }
