@@ -17,21 +17,26 @@ class diver{
 
 /***
  * 
- * @author 
+
+ * @author Yamaan Shaikh
  *
  */
 
 class procurement {
-	//TODO
+
+    	//TODO
 	//******************
 	//variable equipment
+  String equipment;
 	//variable workers
+  String worker;
 	//******************
 	//method constructor
 	//method provide requested workers and equipment
-	//public worker[] getWorker(equipmentTypes e) {
-	//	return null;
-	//}
+	public worker[] getWorker(equipmentTypes e) {
+		return null;
+	}
+
 	//method pair equipment and workers
 	
 }
@@ -40,42 +45,100 @@ class equipment{
 	//TODO
 	//******************
 	//variable name
-	//variable cost
+
+    String equipmentName;
+        //variable cost
+    int cost;
 	//array shift restrictions
+    int[] shiftRestrictions = {0, 0, 0};
 	//******************
 	//method constructor
+    equipment (String equipmentName, equipmentTypes c, int[] restrictions){
+       
+        switch (c)
+       {
+           case BACKHOE:
+               cost = 150;
+               break;
+           case CRANE:
+               cost = 2500;
+               break;
+           case CEMENTTRUCK:
+               cost = 850;
+               break;
+           default:
+               cost = 0;
+           
+       }
+    }
 	//method check shift restrictions
+    public boolean checkShiftRestriction(int shiftRestriction)
+    {
+        return false;
+    }
 }
 
 class worker{
 	//TODO
 	//******************
 	//variable name
-	//variable salary
-	//private int salary;
+    String workerName;
+    equipmentTypes type;
+        //variable salary
+    int salary;
 	//variable equipment
-	//variable timeCard
+    String equipment;
 	//array shift restrictions
+    int[] shiftRestrictions = {0, 0, 0};
 	//******************
 	//method constructor
+        //parameters name and type
+    worker (String name, equipmentTypes t){
+        workerName = name;
+        type = t;
+       switch (t)
+       {
+           case CARPENTRYTOOLS:
+               salary = 200;
+               break;
+           case ELECTRICALTOOLS:
+               salary = 250;
+               shiftRestrictions[2] = 1;
+               break;
+           case PLUMBINGTOOLS:
+               salary = 70;
+               break;
+           default:
+               salary = 0;
+           
+       }
+    }
 	//method check timeCard and fill it if it is empty
-	//public boolean checkTimeCard(int day, int shift){
-	//	return false;
-	//}
+	public boolean checkTimeCard(int day, int shift){
+		return false;
+	}
+        
+        public boolean setTimeCard (int day, int shift){
+            return false;
+    }
 	//method check shift restrictions
+        public boolean checkShiftRestrictions(int shiftRestriction)
+        {
+            return false;
+        }
 	//method getSalary
-	//public int getSalary() {
-	//	return this.salary;
-	//}
+	public int getSalary() 
+        {
+            return this.salary;
+	}
 }
 
 class timeCard{
 	//TODO
 	//******************
 	//array [day][shift]
-	
+  timeCard[][] timeCard;
 }
-
 
 /*********************************************************8
  * 
