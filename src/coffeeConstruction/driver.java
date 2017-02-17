@@ -17,7 +17,7 @@ class diver{
 
 /***
  * 
- * Yamaan Shaikh 
+ * @author Yamaan Shaikh
  *
  */
 
