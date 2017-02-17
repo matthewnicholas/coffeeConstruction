@@ -17,23 +17,26 @@ class diver{
 
 /***
  * 
+
  * @author Yamaan Shaikh
  *
  */
 
 class procurement {
+
     	//TODO
 	//******************
 	//variable equipment
-    String equipment;
+  String equipment;
 	//variable workers
-    String worker;
+  String worker;
 	//******************
 	//method constructor
 	//method provide requested workers and equipment
 	public worker[] getWorker(equipmentTypes e) {
 		return null;
 	}
+
 	//method pair equipment and workers
 	
 }
@@ -42,6 +45,7 @@ class equipment{
 	//TODO
 	//******************
 	//variable name
+
     String equipmentName;
         //variable cost
     int cost;
@@ -133,7 +137,7 @@ class timeCard{
 	//TODO
 	//******************
 	//array [day][shift]
-    timeCard[][] timeCard;
+  timeCard[][] timeCard;
 }
 
 /*********************************************************8
