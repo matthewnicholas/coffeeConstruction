@@ -1,5 +1,3 @@
-package coffeeConstruction;
-
 /***
  * 
  * @author MATTHEW NICHOLAS
@@ -8,14 +6,22 @@ package coffeeConstruction;
  *
  */
 
+package coffeeConstruction;
+
+/***************************************************************************************
+ * 
+ * @author CHAU NGUYEN
+ *
+ */
+
 class diver{
 	public static void main(String args[]) {
 		//TODO
-		System.out.println("Diver");
+		//System.out.println("Diver");
 	}
 }
 
-/***
+/***************************************************************************************
  * 
 
  * @author Yamaan Shaikh
@@ -140,7 +146,7 @@ class timeCard{
   timeCard[][] timeCard;
 }
 
-/*********************************************************8
+/**********************************************************************************************
  * 
  * @author Matthew Nicholas
  *
@@ -250,13 +256,11 @@ class project{
 }
 
 class foreman{
-	//TODO
-	//******************
 	//keep track of teams each day
 	constructionTeam[][] teams;
 	//list of projects
 	project[] projects;
-	//passed procurment
+	//passed procurement
 	procurement proc;
 	//******************
 	//method constructor
@@ -314,7 +318,7 @@ class foreman{
 												ct.addWorker(currentWorker, shift);
 												//remove the requirement from the project as it is met
 												p.removeShift(e, phase);
-												//fill out the worker's timecard
+												//fill out the worker's time card
 												currentWorker.setTimeCard(currentDay, shift);
 											}
 										}
@@ -379,8 +383,6 @@ class foreman{
 }
 
 class constructionTeam{
-	//TODO
-	//******************
 	//array workers
 	private worker[][] shifts;
 	//variable project
